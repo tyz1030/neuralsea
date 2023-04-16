@@ -1,0 +1,10 @@
+*.png
+/data_*
+*/data_*
+*outputs*
+*checkpoints*
+
+*.JPG
+*.PNG
+
+__pycache__*

@@ -1,3 +1,3 @@
 # NeuralSea
-coming soon
+coming soon\
 paper in submission
