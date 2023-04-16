@@ -2,6 +2,9 @@
 coming soon\
 paper in submission
 
+Left: with water effects;       Right: color corrected \
+![novel view](https://github.com/tyz1030/neuralsea/blob/38b7be23c4f21d43948723782a2576945ddd40ee/novelview.gif "novel view")
+
 ## Data ##
 We have [white lego dataset](https://drive.google.com/drive/folders/1wy5nqjScpv-IhXK34UyBTfYI8LFjChcZ?usp=share_link "white lego") released.
 
