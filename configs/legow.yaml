@@ -34,7 +34,7 @@ visualization:
   visdom_env: 'nerf_pytorch3d'
 raysampler:
   n_pts_per_ray: 100
-  n_rays_per_image: 3500
+  n_rays_per_image: 1000
   min_depth: 0.35
   max_depth: 1.2
   stratified: True

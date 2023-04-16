@@ -94,7 +94,6 @@ class WaterEmissionAbsorptionRaymarcher(EmissionAbsorptionRaymarcher):
         rays_bundle: RayBundle,
         raw_densities: torch.Tensor,
         reflected_light: torch.Tensor,
-        sigma_den: torch.Tensor,
         rwd,
         norm_grad: torch.Tensor,
         eps: float = 1e-10,

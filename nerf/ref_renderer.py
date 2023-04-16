@@ -66,7 +66,6 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
         stratified_test: bool,
         chunk_size_test: int,
         n_hidden_neurons_xyz: int = 256,
-        # n_hidden_neurons_dir: int = 128,
         n_layers_xyz: int = 8,
         append_xyz: Tuple[int, ...] = (5,),
         density_noise_std: float = 0.0,
@@ -116,15 +115,20 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
 
         # Assumption 1: environment light in the scene are spatially same
         torch.manual_seed(2)
-        self.env_light = nn.Parameter(torch.tensor([0.1, 0.2, 0.5]), requires_grad=True)
+        self.env_light = nn.Parameter(torch.tensor([0.1, 0.2, 0.5]), requires_grad=True) # deprecated. we are not using this anymore
         
         # Assumption 2: water backscattering parameters are spatially same
-        self.w_par_den = nn.Parameter(torch.tensor([-1.0]), requires_grad=True)
+        self.w_par_den = nn.Parameter(torch.tensor([-1.0]), requires_grad=True) # deprecated. we are not using this anymore
+        
+        # Water backscatter coefficient B_lambda (will feed into softplus)
         self.bs_std = nn.Parameter(torch.tensor([-4.0, -3.0, -3.0]), requires_grad=True)
+        
 
-        # self.water_raw_density = nn.Parameter(0.5*torch.torch.rand(3))
-        self.water_raw_density = nn.Parameter(torch.tensor([-1.0, -2.0, -2.0]), requires_grad=True)
+        # Water absorption coefficient beta_lambda (will feed into softplus)
+        self.water_raw_density = nn.Parameter(torch.tensor([-1.0, -2.0, -2.0]), requires_grad=True) 
+
         self.softp = nn.Softplus()
+
         # Parse out image dimensions.
         image_height, image_width = image_size
 
@@ -197,28 +201,29 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
         raw_densities, features, embeds_world = self._implicit_density_function(ray_bundle, self.water_raw_density)
 
         # STEP 4: Render rays from light source (Absorption-only rendering, get color)
-        # irradiance = 1/torch.square(ray_bundle.lengths*torch.linalg.vector_norm(ray_bundle.directions, dim = -1, keepdim=True))
         if light_falloff=='inverse_linear':
             irradiance = 1/(ray_bundle.lengths*torch.linalg.vector_norm(ray_bundle.directions, dim = -1, keepdim=True))
+        elif light_falloff == 'inverse_square':
+            irradiance = 1/torch.square(ray_bundle.lengths*torch.linalg.vector_norm(ray_bundle.directions, dim = -1, keepdim=True))
+
 
         cos_lightnorm_to_ray = torch.abs(torch.matmul(F.normalize(ray_bundle.directions, dim = -1), light_dir))
         dir_arrived_light = (cos_lightnorm_to_ray.unsqueeze(-1)*irradiance).unsqueeze(-1)
-        # dir_arrived_light = cos_lightnorm_to_ray.unsqueeze(-1).unsqueeze(-1)
 
         albedos = self._implicit_albedo_function(embeds_world)
         norm = self._implicit_norm_function(embeds_world)
         cos_surfacenorm_to_lightray = torch.sum(F.normalize(ray_bundle.directions, dim = -1).unsqueeze(-2)*norm, dim=-1)
         
         reflected_light = albedos*cos_surfacenorm_to_lightray.unsqueeze(-1)*dir_arrived_light
-        # reflected_light = albedos*dir_arrived_light
         
         rwd = self.softp(self.water_raw_density)
-        print(rwd.data)
+        # print(rwd.data)
 
-        rgb_coarse, rgb_refined, rgb_corrected, weights, norm_map = self.raymarcher_camera(ray_bundle, raw_densities, reflected_light, self.softp(self.w_par_den), rwd, norm)
+        rgb_coarse, rgb_refined, rgb_corrected, weights, norm_map = self.raymarcher_camera(ray_bundle, raw_densities, reflected_light, rwd, norm)
 
         bs = self.softp(self.bs_std).cuda()
         # print(bs)
+
         rgb_coarse = rgb_coarse+bs
         rgb_refined = rgb_refined+bs
 
@@ -394,11 +399,8 @@ def visualize_nerf_outputs(
     # Show the coarse and fine renders together with the ground truth images.
     ims_full = torch.cat(
         [
-            # nerf_out[imvar][0].permute(2, 0, 1).detach().cpu().clamp(0.0, 1.0)
             (nerf_out[imvar][0].permute(2, 0, 1)).detach().cpu().clamp(0.0, 1.0)
-            # (nerf_out[imvar][0].exp()/255.0).permute(2, 0, 1).detach().cpu().clamp(0.0, 1.0)
-            # for imvar in ("rgb_coarse", "rgb_fine", "rgb_gt")
-            for imvar in ("rgb_refined","rgb_coarse", "rgb_gt", "norm_map")
+            for imvar in ("rgb_corrected", "rgb_refined","rgb_coarse", "rgb_gt")
         ],
         dim=2,
     ).flip([1, 2])
@@ -407,7 +409,7 @@ def visualize_nerf_outputs(
         ims_full,
         env=visdom_env,
         win="images_full",
-        opts={"title": "coarse | fine | target | norm_map"},
+        opts={"title": "corrected | fine | coarse | target"},
     )
 
     # Make a 3D plot of training cameras and their emitted rays.

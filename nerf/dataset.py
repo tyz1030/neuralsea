@@ -5,14 +5,11 @@
 # LICENSE file in the root directory of this source tree.
 
 import os
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 import numpy as np
-import requests
 import torch
 from PIL import Image
-import tifffile
-import cv2 as cv
 
 from pytorch3d.renderer import PerspectiveCameras,look_at_rotation
 from torch.utils.data import Dataset

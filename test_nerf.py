@@ -82,7 +82,8 @@ def main(cfg: DictConfig):
     elif cfg.test.mode == "color_correction":
         if cfg.data.dataset_type == "synthetic":
             train_dataset, _, _ = get_synthetic_datasets()
-            # train_dataset, _, _ = get_colmap_datasets()
+        if cfg.data.dataset_type == "real":
+            train_dataset, _, _ = get_colmap_datasets()
 
 
         test_dataset = train_dataset
