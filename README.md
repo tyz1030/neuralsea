@@ -14,3 +14,16 @@ Download [white lego weights](https://drive.google.com/file/d/1t8dh7cV-m5r86lLvk
 python3 train_nerf.py --config-name legow
 python3 test_nerf.py --config-name legow
 ```
+
+## Paper ##
+[arxiv](https://arxiv.org/abs/2304.03384)
+```
+@misc{zhang2023nerf,
+      title={Beyond NeRF Underwater: Learning Neural Reflectance Fields for True Color Correction of Marine Imagery}, 
+      author={Tianyi Zhang and Matthew Johnson-Roberson},
+      year={2023},
+      eprint={2304.03384},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
