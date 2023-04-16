@@ -409,7 +409,7 @@ def visualize_nerf_outputs(
         ims_full,
         env=visdom_env,
         win="images_full",
-        opts={"title": "corrected | fine | coarse | target"},
+        opts={"title": "target | coarse | fine | corrected"},
     )
 
     # Make a 3D plot of training cameras and their emitted rays.
