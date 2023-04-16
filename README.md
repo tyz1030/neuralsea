@@ -1,4 +1,4 @@
-# NeuralSea
+# Beyond NeRF Underwater: Learning Neural Reflectance Fields for True Color Correction of Marine Imagery
 coming soon\
 paper in submission\
 [arxiv](https://arxiv.org/abs/2304.03384)
