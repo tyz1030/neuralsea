@@ -3,8 +3,8 @@ coming soon\
 paper in submission
 
 Left: with water effects;       Right: color corrected \
-![novel view](https://github.com/tyz1030/neuralsea/blob/38b7be23c4f21d43948723782a2576945ddd40ee/novelview.gif "novel view")
-Groundtruth image
+![novel view](https://github.com/tyz1030/neuralsea/blob/38b7be23c4f21d43948723782a2576945ddd40ee/novelview.gif "novel view")\
+Groundtruth image\
 ![gt](https://github.com/tyz1030/neuralsea/blob/67a378e6be1095d925fa044a1a5e7d6566f11340/raw081.png "gt")
 
 ## Data ##
