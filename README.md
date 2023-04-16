@@ -1,6 +1,6 @@
 # NeuralSea
 coming soon\
-paper in submission
+paper ([arxiv](https://arxiv.org/abs/2304.03384)) in submission
 
 Left: with water effects;       Right: color corrected \
 ![novel view](https://github.com/tyz1030/neuralsea/blob/38b7be23c4f21d43948723782a2576945ddd40ee/novelview.gif "novel view")\
