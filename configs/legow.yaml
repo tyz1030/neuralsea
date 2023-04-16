@@ -4,7 +4,7 @@ stats_print_interval: 10
 validation_epoch_interval: 10
 checkpoint_epoch_interval: 10
 
-checkpoint_path: 'checkpoints/lego1001.pth' # good with no sca
+checkpoint_path: 'checkpoints/lego_white.pth'
 
 data:
   dataset_name: 'legow'

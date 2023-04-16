@@ -23,7 +23,7 @@ import yaml
 
 
 DEFAULT_DATA_ROOT = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), "..", "data_lego300_coc"
+    os.path.dirname(os.path.realpath(__file__)), "..", "data_lego_white"
 )
 
 DEFAULT_URL_ROOT = "https://dl.fbaipublicfiles.com/pytorch3d_nerf_data"
