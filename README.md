@@ -22,8 +22,7 @@ Our code is built based on PyTorch3D
 
 To install PyTorch3D, please follow their [webpage](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md). We use the following to install:
 ```
-https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md
-```
+pip install "git+https://github.com/facebookresearch/pytorch3d.git"```
 
 ```
 python3 train_nerf.py --config-name legow
