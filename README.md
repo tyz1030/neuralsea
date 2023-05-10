@@ -26,7 +26,7 @@ pip install torch torchvision
 
 Install PyTorch3D, please follow their [webpage](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md). We use the following to install:
 ```
-pip install "git+https://github.com/facebookresearch/pytorch3d.git"```
+pip install "git+https://github.com/facebookresearch/pytorch3d.git"
 ```
 Install other dependencies:
 ```
