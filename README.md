@@ -19,6 +19,12 @@ Download [white lego weights](https://drive.google.com/file/d/1t8dh7cV-m5r86lLvk
 
 ## Train & Test ##
 Our code is built based on PyTorch3D
+
+To install PyTorch3D, please follow their [webpage](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md). We use the following to install:
+```
+https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md
+```
+
 ```
 python3 train_nerf.py --config-name legow
 python3 test_nerf.py --config-name legow
