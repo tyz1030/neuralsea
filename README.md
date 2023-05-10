@@ -28,6 +28,10 @@ Install PyTorch3D, please follow their [webpage](https://github.com/facebookrese
 ```
 pip install "git+https://github.com/facebookresearch/pytorch3d.git"```
 ```
+Install other dependencies:
+```
+pip install hydra-core plotly visdom matplotlib
+```
 
 ## Train & Test ##
 ```
