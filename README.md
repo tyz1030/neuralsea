@@ -17,13 +17,18 @@ Download 'data_lego_white' and put it under the neuralsea directory.
 
 Download [white lego weights](https://drive.google.com/file/d/1t8dh7cV-m5r86lLvkS7ft8tSdnFaQMfx/view?usp=sharing) and put it under neuralsea/checkpoints/ to use our pretrained weights.
 
-## Train & Test ##
-Our code is built based on PyTorch3D
+## Dependencies ##
+Install PyTorch:
+```
+pip install torch torchvision
+```
 
-To install PyTorch3D, please follow their [webpage](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md). We use the following to install:
+Install PyTorch3D, please follow their [webpage](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md). We use the following to install:
 ```
 pip install "git+https://github.com/facebookresearch/pytorch3d.git"```
+```
 
+## Train & Test ##
 ```
 python3 train_nerf.py --config-name legow
 python3 test_nerf.py --config-name legow
