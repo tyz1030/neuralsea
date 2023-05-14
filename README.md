@@ -24,7 +24,7 @@ Install [PyTorch](https://pytorch.org/get-started/locally/):
 pip install torch torchvision
 ```
 
-Install PyTorch3D, please follow their [webpage](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md). We use the following to install:
+Install PyTorch3D, please follow their [instruction](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md). We use the following to install:
 ```
 pip install "git+https://github.com/facebookresearch/pytorch3d.git"
 ```
