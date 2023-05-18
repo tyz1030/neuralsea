@@ -146,7 +146,6 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
 
         # Init the EA raymarcher used by both passes.
         self.raymarcher_camera = WaterEmissionAbsorptionRaymarcher() #?
-        self.raymarcher_lightsource = WaterAbsorptionOnlyRaymarcher()
 
         self._implicit_density_function = WaterDensityFieldHash(
             n_hidden_neurons_xyz=n_hidden_neurons_xyz,
@@ -189,18 +188,15 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
                 `rgb_fine`: The result of the fine rendering pass.
                 `rgb_gt`: The corresponding ground-truth RGB values.
         """
-        # STEP 1: Sample ray points (rays from camera to scene points)
-        # self.eval()
+
         ray_bundle = self.raysampler_camera(
             cameras=camera, 
             chunksize=self._chunk_size_test,
             chunk_idx=chunk_idx,
         )
 
-        # STEP 3: Feed points from STEP 2 to Implicit function, get density
         raw_densities, features, embeds_world = self._implicit_density_function(ray_bundle, self.water_raw_density)
 
-        # STEP 4: Render rays from light source (Absorption-only rendering, get color)
         if light_falloff=='inverse_linear':
             irradiance = 1/(ray_bundle.lengths*torch.linalg.vector_norm(ray_bundle.directions, dim = -1, keepdim=True))
         elif light_falloff == 'inverse_square':
