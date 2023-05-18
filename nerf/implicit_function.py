@@ -229,8 +229,6 @@ class WaterDensityField(torch.nn.Module):
         and mapped to [0-1] range with 1 - inverse exponential of `raw_densities`.
         """
         raw_densities = self.density_layer(features)
-        # print("RAW DENSITITES: ")
-        # print(raw_densities[0, 0, :, 0, 0])
         deltas = torch.cat(
             (
                 depth_values[..., 1:] - depth_values[..., :-1],
@@ -238,23 +236,16 @@ class WaterDensityField(torch.nn.Module):
             ),
             dim=-1,
         )[..., None]
-        # print(deltas)
 
         if density_noise_std > 0.0:
             raw_densities = (
                 raw_densities + torch.randn_like(raw_densities) * density_noise_std
             )
-        # print(depth_values.shape)
-        # print(deltas.shape)
+
 
         raw_densities = torch.relu_(raw_densities) + torch.relu(self.medium_density)
         densities = 1 - (-deltas * raw_densities).exp()
 
-        # densities = 1 - (-deltas * torch.relu_(raw_densities)).exp()
-
-        # densities = 1 - (-deltas * (torch.relu_(raw_densities))).exp()
-        # raw_densities[raw_densities<0.6]=0.0
-        # densities = 1 - (-deltas * raw_densities).exp()
         return densities, raw_densities
 
     def forward(
@@ -286,29 +277,17 @@ class WaterDensityField(torch.nn.Module):
             rays_densities: A tensor of shape `(minibatch, ..., num_points_per_ray, 1)`
                 denoting the opacity of each ray point.
         """
-        # We first convert the ray parametrizations to world
-        # coordinates with `ray_bundle_to_ray_points`.
+
         rays_points_world = ray_bundle_to_ray_points(ray_bundle)
         rays_points_world.requires_grad = True
-        # rays_points_world.shape = [minibatch x ... x 3]
 
-        # For each 3D world coordinate, we obtain its harmonic embedding.
         embeds_xyz = self.harmonic_embedding_xyz(rays_points_world)
-        # embeds_xyz.shape = [minibatch x ... x self.n_harmonic_functions*6 + 3]
 
-        # self.mlp maps each harmonic embedding to a latent feature space.
         features = self.mlp_xyz(embeds_xyz, embeds_xyz)
-        # features.shape = [minibatch x ... x self.n_hidden_neurons_xyz]
 
         rays_densities, raw_densities = self._get_densities(
                 features, ray_bundle.lengths, density_noise_std)
 
-        # dsigdxyz = torch.autograd.grad(raw_densities.sum(),rays_points_world, create_graph=self.training)[0]
-        # dsig_normalized = F.normalize(dsigdxyz[..., 0, :], dim = -1)
-        # print(dsigdxyz.shape)
-        # import sys
-        # sys.exit()
-        # return rays_densities, dsig_normalized, features[..., 0, :]
         return rays_densities, raw_densities[..., 0, :], features[..., 0, :]
 
 class WaterDensityFieldHash(torch.nn.Module):
@@ -409,14 +388,9 @@ class WaterDensityFieldHash(torch.nn.Module):
             rays_densities: A tensor of shape `(minibatch, ..., num_points_per_ray, 1)`
                 denoting the opacity of each ray point.
         """
-        # We first convert the ray parametrizations to world
-        # coordinates with `ray_bundle_to_ray_points`.
-        rays_points_world = ray_bundle_to_ray_points(ray_bundle)
-        # print(rays_points_world)
-        # For each 3D world coordinate, we obtain its harmonic embedding.
-        embeds_xyz = self.hash_embedding_xyz(rays_points_world)
 
-        # self.mlp maps each harmonic embedding to a latent feature space.
+        rays_points_world = ray_bundle_to_ray_points(ray_bundle)
+        embeds_xyz = self.hash_embedding_xyz(rays_points_world)
         features = self.mlp_xyz(embeds_xyz, embeds_xyz)
 
         raw_densities = self._get_densities(
