@@ -22,56 +22,6 @@ def _xavier_init(linear):
     torch.nn.init.xavier_uniform_(linear.weight.data)
 
 
-class WaterAlbedoNormField(torch.nn.Module):
-    def __init__(
-        self,
-        n_hidden_neurons_xyz: int = 256,
-        n_hidden_neurons_alb: int = 128,
-        input_dim: int = 32,
-        **kwargs,
-    ):
-        """
-        Args:
-            n_hidden_neurons_xyz: The number of hidden units in the
-                fully connected layers of the MLP that accepts the 3D point
-                locations and outputs the occupancy field with the intermediate
-                features.
-            n_hidden_neurons_dir: The number of hidden units in the
-                fully connected layers of the MLP that accepts the intermediate
-                features and ray directions and outputs the radiance field
-                (per-point colors).
-        """
-        super().__init__()
-
-        self.color_layer = torch.nn.Sequential(
-            torch.nn.Linear(
-                n_hidden_neurons_xyz+input_dim, n_hidden_neurons_xyz
-            ),
-            torch.nn.LeakyReLU(True),
-            torch.nn.Linear(
-                n_hidden_neurons_xyz, n_hidden_neurons_xyz
-            ),
-            torch.nn.LeakyReLU(True),
-            torch.nn.Linear(
-                n_hidden_neurons_xyz, n_hidden_neurons_alb
-            ),
-            torch.nn.LeakyReLU(True),
-            torch.nn.Linear(n_hidden_neurons_alb, 6)
-        )
-
-        self.color_final_layer = torch.nn.Softplus()
-
-    def forward(
-        self,
-        features: torch.Tensor,
-        embeds_world: torch.Tensor,
-        **kwargs,
-    ) -> torch.Tensor:
-        color_and_norm = self.color_layer(torch.cat((features, embeds_world), dim=-1))
-        color = self.color_final_layer(color_and_norm[..., :3])
-        norm = F.normalize(color_and_norm[..., 3:], dim = -1)
-        return color, norm
-
 class WaterAlbedoField(torch.nn.Module):
     def __init__(
         self,

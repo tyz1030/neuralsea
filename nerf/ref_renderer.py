@@ -18,7 +18,7 @@ from pytorch3d.vis.plotly_vis import plot_scene
 from visdom import Visdom
 
 from .implicit_function import WaterDensityFieldHash, WaterAlbedoField, WaterNormField
-from .raymarcher import WaterEmissionAbsorptionRaymarcher, WaterAbsorptionOnlyRaymarcher
+from .raymarcher import WaterEmissionAbsorptionRaymarcher
 from .raysampler import BoundingPlaneRaysamplerCustom
 from .utils import calc_mse, calc_psnr, sample_images_at_mc_locs
 
@@ -227,6 +227,9 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
         rgb_refined = torch.clamp(rgb_refined, max=1.0, min = 0.000001)
         rgb_corrected = torch.clamp(rgb_corrected, max=1.0, min = 0.000001)
 
+
+        ###
+        # Uncomment to do tone mapping on raw image
         # rgb_coarse = torch.pow(rgb_coarse, 0.45)
         # rgb_refined = torch.pow(rgb_refined, 0.45)
 
@@ -241,6 +244,9 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
                 ray_bundle.xys,
             )
             rgb_gt = rgb_gt
+
+            ###
+            # Uncomment to do tone mapping on raw image
             # rgb_gt = torch.pow(rgb_gt, 0.45)
         else:
             rgb_gt = None
