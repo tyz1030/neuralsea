@@ -39,6 +39,17 @@ python3 train_nerf.py --config-name legow
 python3 test_nerf.py --config-name legow
 ```
 
+## Visualization ##
+install visdom
+```
+pip install visdom
+```
+run visdom
+```
+visdom
+```
+
+
 ## Paper ##
 [arxiv](https://arxiv.org/abs/2304.03384)
 ```
