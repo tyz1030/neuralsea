@@ -134,8 +134,8 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
 
         self.raysampler_camera = BoundingPlaneRaysamplerCustom(
             n_pts_per_ray=n_pts_per_ray,
-            min_depth=min_depth,
-            max_depth=max_depth,
+            # min_depth=min_depth,
+            # max_depth=max_depth,
             stratified=stratified,
             stratified_test=stratified_test,
             n_rays_per_image=n_rays_per_image,
