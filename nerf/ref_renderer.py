@@ -208,7 +208,7 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
 
         albedos = self._implicit_albedo_function(embeds_world)
         norm = self._implicit_norm_function(embeds_world)
-        cos_surfacenorm_to_lightray = torch.sum(F.normalize(ray_bundle.directions, dim = -1).unsqueeze(-2)*norm, dim=-1)
+        cos_surfacenorm_to_lightray = torch.abs(torch.sum(F.normalize(ray_bundle.directions, dim = -1).unsqueeze(-2)*norm, dim=-1))
         
         reflected_light = albedos*cos_surfacenorm_to_lightray.unsqueeze(-1)*dir_arrived_light
         
@@ -229,7 +229,7 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
 
 
         ###
-        # Uncomment to do tone mapping on raw image
+        # If the dark part of the real world data (linear image) is rendered in low quality, then uncomment the following to do tone mapping on estimated radiance
         # rgb_coarse = torch.pow(rgb_coarse, 0.45)
         # rgb_refined = torch.pow(rgb_refined, 0.45)
 

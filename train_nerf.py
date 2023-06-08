@@ -190,18 +190,17 @@ def main(cfg: DictConfig):
             )
 
             # The loss is a sum of coarse and fine MSEs
-            # loss = metrics["mse_coarse"]+metrics["mse_fine"]
             loss = metrics["mse_coarse"]+metrics["mse_refined"]
             # loss = metrics["mse_coarse"]
 
             # Take the training step.
-            # if True:
-            if ((iteration%8 == 0) and (epoch%1 == 0)):
+            if True:
+            # if ((iteration%8 == 0) and (epoch%1 == 0)):
                 optimizer.zero_grad()
             loss.backward()
-            # if True:
-            if ((iteration%8 == 7) and epoch%1 == 0):
-                print("Stepping")
+            if True:
+            # if ((iteration%8 == 7) and epoch%1 == 0):
+                # print("Stepping")
                 optimizer.step()
 
             # Update stats with the current metrics.
