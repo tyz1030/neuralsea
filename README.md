@@ -48,6 +48,7 @@ run visdom
 ```
 visdom
 ```
+Then in your browser, navigate to http://localhost:8097/
 
 
 ## Paper ##
