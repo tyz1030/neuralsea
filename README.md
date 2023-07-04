@@ -22,7 +22,7 @@ Water Tank High Turbidity:\
 ## Data ##
 We have [white lego dataset](https://drive.google.com/drive/folders/1wy5nqjScpv-IhXK34UyBTfYI8LFjChcZ?usp=share_link "white lego") released.
 
-(we are working on releasing rest of the dataset and weights)
+(we will release rest of the dataset and weights once the manuscript is finalized)
 
 Download 'data_lego_white' and put it under the neuralsea directory.
 
