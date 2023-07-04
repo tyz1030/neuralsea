@@ -13,9 +13,12 @@ More real-world results:\
 Lake Erie:\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/254659d2bf3547b158b140788775030911940a3c/erie01.gif "novel view")\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/254659d2bf3547b158b140788775030911940a3c/erie02.gif "novel view")\
-Water Tank:\
-![novel view](https://github.com/tyz1030/neuralsea/blob/254659d2bf3547b158b140788775030911940a3c/lab42.gif "novel view")\
-![novel view](https://github.com/tyz1030/neuralsea/blob/b6c0787004ae8abcecae76759148e6191628636c/lab41.gif "novel view")
+Water Tank Low Turbidity:\
+![novel view](https://github.com/tyz1030/neuralsea/blob/83d8da0f5273690b592ff8f6d95c346937f483c1/lab41_lowturbidity.gif "novel view")\
+Water Tank Mid Turbidity:\
+![novel view](https://github.com/tyz1030/neuralsea/blob/83d8da0f5273690b592ff8f6d95c346937f483c1/lab42_midturbidity.gif "novel view")
+Water Tank High Turbidity:\
+![novel view](https://github.com/tyz1030/neuralsea/blob/83d8da0f5273690b592ff8f6d95c346937f483c1/lab43_midturbidity.gif "novel view")
 ## Data ##
 We have [white lego dataset](https://drive.google.com/drive/folders/1wy5nqjScpv-IhXK34UyBTfYI8LFjChcZ?usp=share_link "white lego") released.
 
