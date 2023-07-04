@@ -16,7 +16,7 @@ Lake Erie:\
 Water Tank Low Turbidity:\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/83d8da0f5273690b592ff8f6d95c346937f483c1/lab41_lowturbidity.gif "novel view")\
 Water Tank Mid Turbidity:\
-![novel view](https://github.com/tyz1030/neuralsea/blob/83d8da0f5273690b592ff8f6d95c346937f483c1/lab42_midturbidity.gif "novel view")
+![novel view](https://github.com/tyz1030/neuralsea/blob/83d8da0f5273690b592ff8f6d95c346937f483c1/lab42_midturbidity.gif "novel view")\
 Water Tank High Turbidity:\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/83d8da0f5273690b592ff8f6d95c346937f483c1/lab43_highturbidity.gif "novel view")
 ## Data ##
