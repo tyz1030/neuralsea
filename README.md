@@ -13,6 +13,7 @@ More results:\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/254659d2bf3547b158b140788775030911940a3c/erie01.gif "novel view")\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/254659d2bf3547b158b140788775030911940a3c/erie02.gif "novel view")\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/254659d2bf3547b158b140788775030911940a3c/lab42.gif "novel view")\
+![novel view](https://github.com/tyz1030/neuralsea/blob/b6c0787004ae8abcecae76759148e6191628636c/lab41.gif "novel view")
 ## Data ##
 We have [white lego dataset](https://drive.google.com/drive/folders/1wy5nqjScpv-IhXK34UyBTfYI8LFjChcZ?usp=share_link "white lego") released.
 
