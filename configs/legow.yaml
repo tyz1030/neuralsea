@@ -1,10 +1,10 @@
 seed: 23
-resume: True                              
+resume: False                              
 stats_print_interval: 10
 validation_epoch_interval: 10
 checkpoint_epoch_interval: 10
 
-checkpoint_path: 'checkpoints/lego_white.pth'
+checkpoint_path: 'checkpoints/lego_white_test.pth'
 
 data:
   dataset_name: 'legow'
@@ -23,7 +23,7 @@ test:
   trajectory_scale: 0.1
 optimizer:
   max_epochs: 5000000
-  lr: 0.00001 # 0.001 or 0.0001 or maybe lower is good to start
+  lr: 0.0001 # 0.001 or 0.0001 or maybe lower is good to start
   # lr_scheduler_step_size: 3000
   # lr_scheduler_gamma: 0.01
 visualization:
@@ -34,7 +34,7 @@ visualization:
   visdom_env: 'nerf_pytorch3d'
 raysampler:
   n_pts_per_ray: 100
-  n_rays_per_image: 1000
+  n_rays_per_image: 2000
   min_depth: 0.35
   max_depth: 1.2
   stratified: True

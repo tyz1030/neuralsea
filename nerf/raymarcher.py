@@ -83,4 +83,4 @@ class WaterEmissionAbsorptionRaymarcher(EmissionAbsorptionRaymarcher):
 
         norm_map = (weights * norm_grad).sum(dim=-2)
 
-        return features, refined_features,corrected_features, weights, norm_map
+        return features, refined_features, corrected_features, weights, norm_map
