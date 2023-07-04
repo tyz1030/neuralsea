@@ -9,7 +9,7 @@ Groundtruth image\
 ![gt](https://github.com/tyz1030/neuralsea/blob/67a378e6be1095d925fa044a1a5e7d6566f11340/raw081.png "gt")
 
 
-More results:
+More results:\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/254659d2bf3547b158b140788775030911940a3c/erie01.gif "novel view")\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/254659d2bf3547b158b140788775030911940a3c/erie02.gif "novel view")\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/254659d2bf3547b158b140788775030911940a3c/lab42.gif "novel view")\
