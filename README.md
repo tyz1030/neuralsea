@@ -8,6 +8,10 @@ Left: with water effects;       Right: color corrected \
 Groundtruth image\
 ![gt](https://github.com/tyz1030/neuralsea/blob/67a378e6be1095d925fa044a1a5e7d6566f11340/raw081.png "gt")
 
+![novel view](https://github.com/tyz1030/neuralsea/blob/79eb82be6a3263f10813ba84d088d468ff5a3b48/yellow_lego.gif "novel view")\
+Groundtruth image\
+![gt](https://github.com/tyz1030/neuralsea/blob/8bc04ff98ac2265d1688bb840d96f3ddbb9d286a/raw081_yellow.png "gt")
+
 
 More real-world results:\
 Lake Erie:\
