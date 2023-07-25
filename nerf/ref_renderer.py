@@ -24,44 +24,13 @@ from .utils import calc_mse, calc_psnr, sample_images_at_mc_locs
 
 
 class WaterReflectanceFieldRenderer(torch.nn.Module):
-    """
-    Implements a renderer of a Neural Radiance Field.
-
-    This class holds pointers to the fine and coarse renderer objects, which are
-    instances of `pytorch3d.renderer.ImplicitRenderer`, and pointers to the
-    neural networks representing the fine and coarse Neural Radiance Fields,
-    which are instances of `NeuralRadianceField`.
-
-    The rendering forward pass proceeds as follows:
-        1) For a given input camera, rendering rays are generated with the
-            `NeRFRaysampler` object of `self._renderer['coarse']`.
-            In the training mode (`self.training==True`), the rays are a set
-                of `n_rays_per_image` random 2D locations of the image grid.
-            In the evaluation mode (`self.training==False`), the rays correspond
-                to the full image grid. The rays are further split to
-                `chunk_size_test`-sized chunks to prevent out-of-memory errors.
-        2) For each ray point, the coarse `NeuralRadianceField` MLP is evaluated.
-            The pointer to this MLP is stored in `self._implicit_function['coarse']`
-        3) The coarse radiance field is rendered with the
-            `EmissionAbsorptionNeRFRaymarcher` object of `self._renderer['coarse']`.
-        4) The coarse raymarcher outputs a probability distribution that guides
-            the importance raysampling of the fine rendering pass. The
-            `ProbabilisticRaysampler` stored in `self._renderer['fine'].raysampler`
-            implements the importance ray-sampling.
-        5) Similar to 2) the fine MLP in `self._implicit_function['fine']`
-            labels the ray points with occupancies and colors.
-        6) self._renderer['fine'].raymarcher` generates the final fine render.
-        7) The fine and coarse renders are compared to the ground truth input image
-            with PSNR and MSE metrics.
-    """
-
     def __init__(
         self,
         image_size: Tuple[int, int],
         n_pts_per_ray: int,
         n_rays_per_image: int,
-        min_depth: float,
-        max_depth: float,
+        near_bounding_in_z: float,
+        near_to_far_range_in_z: float,
         stratified: bool,
         stratified_test: bool,
         chunk_size_test: int,
@@ -70,62 +39,15 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
         append_xyz: Tuple[int, ...] = (5,),
         density_noise_std: float = 0.0,
         visualization: bool = False,
+        dataset_type = str
     ):
-        """
-        Args:
-            image_size: The size of the rendered image (`[height, width]`).
-            n_pts_per_ray: The number of points sampled along each ray for the
-                coarse rendering pass.
-            n_pts_per_ray_fine: The number of points sampled along each ray for the
-                fine rendering pass.
-            n_rays_per_image: Number of Monte Carlo ray samples when training
-                (`self.training==True`).
-            min_depth: The minimum depth of a sampled ray-point for the coarse rendering.
-            max_depth: The maximum depth of a sampled ray-point for the coarse rendering.
-            stratified: If `True`, stratifies (=randomly offsets) the depths
-                of each ray point during training (`self.training==True`).
-            stratified_test: If `True`, stratifies (=randomly offsets) the depths
-                of each ray point during evaluation (`self.training==False`).
-            chunk_size_test: The number of rays in each chunk of image rays.
-                Active only when `self.training==True`.
-            n_harmonic_functions_xyz: The number of harmonic functions
-                used to form the harmonic embedding of 3D point locations.
-            n_harmonic_functions_dir: The number of harmonic functions
-                used to form the harmonic embedding of the ray directions.
-            n_hidden_neurons_xyz: The number of hidden units in the
-                fully connected layers of the MLP that accepts the 3D point
-                locations and outputs the occupancy field with the intermediate
-                features.
-            n_hidden_neurons_dir: The number of hidden units in the
-                fully connected layers of the MLP that accepts the intermediate
-                features and ray directions and outputs the radiance field
-                (per-point colors).
-            n_layers_xyz: The number of layers of the MLP that outputs the
-                occupancy field.
-            append_xyz: The list of indices of the skip layers of the occupancy MLP.
-                Prior to evaluating the skip layers, the tensor which was input to MLP
-                is appended to the skip layer input.
-            density_noise_std: The standard deviation of the random normal noise
-                added to the output of the occupancy MLP.
-                Active only when `self.training==True`.
-            visualization: whether to store extra output for visualization.
-        """
-
         super().__init__()
 
-        # Assumption 1: environment light in the scene are spatially same
-        torch.manual_seed(2)
-        self.env_light = nn.Parameter(torch.tensor([0.1, 0.2, 0.5]), requires_grad=True) # deprecated. we are not using this anymore
-        
-        # Assumption 2: water backscattering parameters are spatially same
-        self.w_par_den = nn.Parameter(torch.tensor([-1.0]), requires_grad=True) # deprecated. we are not using this anymore
-        
         # Water backscatter coefficient B_lambda (will feed into softplus)
-        self.bs_std = nn.Parameter(torch.tensor([-4.0, -3.0, -3.0]), requires_grad=True)
+        self.bs = nn.Parameter(torch.tensor([-4.0, -3.0, -3.0]), requires_grad=True)
         
-
         # Water absorption coefficient beta_lambda (will feed into softplus)
-        self.water_raw_density = nn.Parameter(torch.tensor([-1.0, -2.0, -2.0]), requires_grad=True) 
+        self.absorption_coeff = nn.Parameter(torch.tensor([-1.0, -2.0, -2.0]), requires_grad=True) 
 
         self.softp = nn.Softplus()
 
@@ -134,13 +56,13 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
 
         self.raysampler_camera = BoundingPlaneRaysamplerCustom(
             n_pts_per_ray=n_pts_per_ray,
-            # min_depth=min_depth,
-            # max_depth=max_depth,
             stratified=stratified,
             stratified_test=stratified_test,
             n_rays_per_image=n_rays_per_image,
             image_height=image_height,
             image_width=image_width,
+            near_bounding_in_z=near_bounding_in_z,
+            near_to_far_range_in_z=near_to_far_range_in_z,
         )
 
 
@@ -160,6 +82,8 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
         self._chunk_size_test = chunk_size_test
         self._image_size = image_size
         self.visualization = visualization
+
+        self.dataset_type = dataset_type
 
     def _process_ray_chunk(
         self,
@@ -195,7 +119,7 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
             chunk_idx=chunk_idx,
         )
 
-        raw_densities, features, embeds_world = self._implicit_density_function(ray_bundle, self.water_raw_density)
+        raw_densities, features, embeds_world = self._implicit_density_function(ray_bundle, self.absorption_coeff)
 
         if light_falloff=='inverse_linear':
             irradiance = 1/(ray_bundle.lengths*torch.linalg.vector_norm(ray_bundle.directions, dim = -1, keepdim=True))
@@ -212,13 +136,10 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
         
         reflected_light = albedos*cos_surfacenorm_to_lightray.unsqueeze(-1)*dir_arrived_light
         
-        rwd = self.softp(self.water_raw_density)
-        # print(rwd.data)
+        abso_coeff = self.softp(self.absorption_coeff)
+        rgb_coarse, rgb_refined, rgb_corrected, weights, norm_map = self.raymarcher_camera(ray_bundle, raw_densities, reflected_light, abso_coeff, norm)
 
-        rgb_coarse, rgb_refined, rgb_corrected, weights, norm_map = self.raymarcher_camera(ray_bundle, raw_densities, reflected_light, rwd, norm)
-
-        bs = self.softp(self.bs_std).cuda()
-        # print(bs)
+        bs = self.softp(self.bs).cuda()
 
         rgb_coarse = rgb_coarse+bs
         rgb_refined = rgb_refined+bs
@@ -230,8 +151,10 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
 
         ###
         # If the dark part of the real world data (linear image) is rendered in low quality, then uncomment the following to do tone mapping on estimated radiance
-        # rgb_coarse = torch.pow(rgb_coarse, 0.45)
-        # rgb_refined = torch.pow(rgb_refined, 0.45)
+        if self.dataset_type == "real":
+            rgb_coarse = torch.pow(rgb_coarse, 0.45)
+            rgb_refined = torch.pow(rgb_refined, 0.45)
+            rgb_corrected = torch.pow(rgb_corrected, 0.45)
 
         norm_map = torch.clamp(-norm_map, max = 1.0, min = -1.0)
         norm_map = norm_map/2+0.5
@@ -243,15 +166,11 @@ class WaterReflectanceFieldRenderer(torch.nn.Module):
                 image[..., :3][None],
                 ray_bundle.xys,
             )
-            rgb_gt = rgb_gt
-
-            ###
-            # Uncomment to do tone mapping on raw image
-            # rgb_gt = torch.pow(rgb_gt, 0.45)
+            if self.dataset_type == "real":
+                rgb_gt = torch.pow(rgb_gt, 0.45)
         else:
             rgb_gt = None
 
-        # out = {"rgb_coarse": rgb_coarse, "rgb_gt": rgb_gt}
         out = {"rgb_coarse": rgb_coarse,"rgb_refined": rgb_refined, "rgb_gt": rgb_gt, "norm_map": norm_map, "rgb_corrected": rgb_corrected}
         if self.visualization:
             # Store the coarse rays/weights only for visualization purposes.

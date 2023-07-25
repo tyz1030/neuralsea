@@ -47,8 +47,8 @@ def main(cfg: DictConfig):
         image_size=cfg.data.image_size,
         n_pts_per_ray=cfg.raysampler.n_pts_per_ray,
         n_rays_per_image=cfg.raysampler.n_rays_per_image,
-        min_depth=cfg.raysampler.min_depth,
-        max_depth=cfg.raysampler.max_depth,
+        near_bounding_in_z=cfg.raysampler.near_bounding_in_z,
+        near_to_far_range_in_z=cfg.raysampler.near_to_far_range_in_z,
         stratified=cfg.raysampler.stratified,
         stratified_test=cfg.raysampler.stratified_test,
         chunk_size_test=cfg.raysampler.chunk_size_test,
@@ -57,7 +57,8 @@ def main(cfg: DictConfig):
         n_layers_xyz=cfg.implicit_function.n_layers_xyz,
         density_noise_std=cfg.implicit_function.density_noise_std,
         visualization=cfg.visualization.visdom,
-        append_xyz = (cfg.implicit_function.skip,)
+        append_xyz = (cfg.implicit_function.skip,),
+        dataset_type = cfg.data.dataset_type
     )
 
     # Move the model to the relevant device.
@@ -102,20 +103,6 @@ def main(cfg: DictConfig):
             ["loss", "mse_coarse", "mse_fine", "psnr_coarse", "psnr_fine", "sec/it"],
         )
 
-    # Learning rate scheduler setup.
-
-    # Following the original code, we use exponential decay of the
-    # learning rate: current_lr = base_lr * gamma ** (epoch / step_size)
-    # def lr_lambda(epoch):
-    #     return cfg.optimizer.lr_scheduler_gamma ** (
-    #         epoch / cfg.optimizer.lr_scheduler_step_size
-    #     )
-
-    # The learning rate scheduling is implemented with LambdaLR PyTorch scheduler.
-    # lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
-    #     optimizer, lr_lambda, last_epoch=start_epoch - 1, verbose=False
-    # )
-
     # Initialize the cache for storing variables needed for visualization.
     visuals_cache = collections.deque(maxlen=cfg.visualization.history_size)
 
@@ -132,9 +119,9 @@ def main(cfg: DictConfig):
 
     # train_dataset, val_dataset, _ = get_colmap_datasets()
     if cfg.data.dataset_type == "synthetic":
-        train_dataset, val_dataset, _ = get_synthetic_datasets()
+        train_dataset, val_dataset, _ = get_synthetic_datasets(cfg.data.dataset_name)
     if cfg.data.dataset_type == "real":
-        train_dataset, val_dataset, _ = get_colmap_datasets()
+        train_dataset, val_dataset, _ = get_colmap_datasets(cfg.data.dataset_name, cfg.data.image_down_scale, cfg.data.pose_down_scale)
 
     if cfg.data.precache_rays:
         # Precache the projection rays.
@@ -195,12 +182,9 @@ def main(cfg: DictConfig):
 
             # Take the training step.
             if True:
-            # if ((iteration%8 == 0) and (epoch%1 == 0)):
                 optimizer.zero_grad()
             loss.backward()
             if True:
-            # if ((iteration%8 == 7) and epoch%1 == 0):
-                # print("Stepping")
                 optimizer.step()
 
             # Update stats with the current metrics.

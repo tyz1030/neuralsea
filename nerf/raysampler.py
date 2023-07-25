@@ -18,6 +18,8 @@ class BoundingPlaneRaysamplerCustom(torch.nn.Module):
         n_rays_per_image: int,
         image_width: int,
         image_height: int,
+        near_bounding_in_z: float,
+        near_to_far_range_in_z: float,
         stratified: bool = False,
         stratified_test: bool = False,
     ):
@@ -44,6 +46,9 @@ class BoundingPlaneRaysamplerCustom(torch.nn.Module):
         self.image_height = image_height
         self.n_rays_per_image = n_rays_per_image
         self.n_pts_per_ray = n_pts_per_ray
+
+        self.near_bounding_in_z = near_bounding_in_z
+        self.near_to_far_range_in_z = near_to_far_range_in_z
 
     @torch.no_grad()
     def get_n_chunks(self, chunksize: int, batch_size: int):
@@ -96,13 +101,13 @@ class BoundingPlaneRaysamplerCustom(torch.nn.Module):
 
         # Adjust the following to put the scene between near and far bounding planes
         ####
-        # z_to_foreground = -z_to_center+0.5
-        # z_foreg_to_back = 0.3
+        # z_to_foreground = -z_to_center+0.6
+        # z_foreg_to_back = 0.4
 
-        z_to_foreground = -z_to_center-0.2
-        z_foreg_to_back = 0.4
+        z_to_foreground = -z_to_center+self.near_bounding_in_z
+        # z_foreg_to_back = near_to_far_range_in_z
 
-        depths = z_to_foreground + depths*z_foreg_to_back
+        depths = z_to_foreground + depths*self.near_to_far_range_in_z
         if self.training:
             xys = 2*torch.rand([self.n_rays_per_image, 2])-1.0
             temp_xys = torch.concat([xys[:, 0, None], xys[:, 1, None]], dim=1)

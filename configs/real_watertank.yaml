@@ -1,31 +1,28 @@
 seed: 23
-resume: False                              
+resume: True                              
 stats_print_interval: 10
 validation_epoch_interval: 10
 checkpoint_epoch_interval: 10
 
-checkpoint_path: 'checkpoints/lego_white_test.pth'
+checkpoint_path: 'checkpoints/real_watertank_0041.pth'
 
 data:
-  dataset_name: 'legow'
-  dataset_type: 'synthetic' # synthetic or real
-  # image_size: [200,300] # [height, width]
-  image_size: [160,200] # [height, width]
+  dataset_name: 'data_real041'
+  dataset_type: 'real' # synthetic or real
+  image_size: [200,300] # [height, width]
   precache_rays: False
-  light_falloff: 'inverse_linear' # we use 'inverse_linear' for our synthetic data as that's how we render it. we use 'inverse_square' for real world data
+  light_falloff: 'inverse_square' # we use 'inverse_linear' for our synthetic data as that's how we render it. we use 'inverse_square' for real world data
+  image_down_scale: 20
+  pose_down_scale: 16
 test:
   mode: 'color_correction'
-  # trajectory_type: 'circular'
-  # up: [0.0, 0.1, 0.0]
   scene_center: [0.0, 0.05, 0.05]
   n_frames: 100
   fps: 20
   trajectory_scale: 0.1
 optimizer:
   max_epochs: 5000000
-  lr: 0.0001 # 0.001 or 0.0001 or maybe lower is good to start
-  # lr_scheduler_step_size: 3000
-  # lr_scheduler_gamma: 0.01
+  lr: 0.0001
 visualization:
   history_size: 10
   visdom: True
@@ -34,9 +31,9 @@ visualization:
   visdom_env: 'nerf_pytorch3d'
 raysampler:
   n_pts_per_ray: 100
-  n_rays_per_image: 2000
-  min_depth: 0.35
-  max_depth: 1.2
+  n_rays_per_image: 1000
+  near_bounding_in_z: 0.6
+  near_to_far_range_in_z: 0.4
   stratified: True
   stratified_test: False
   chunk_size_test: 10000

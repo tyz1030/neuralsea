@@ -1,0 +1,45 @@
+seed: 23
+resume: True                              
+stats_print_interval: 10
+validation_epoch_interval: 10
+checkpoint_epoch_interval: 10
+
+checkpoint_path: 'checkpoints/lego_white_20230724.pth'
+
+data:
+  dataset_name: 'data_lego_white'
+  dataset_type: 'synthetic' # synthetic or real
+  image_size: [160,200] # [height, width]
+  precache_rays: False
+  light_falloff: 'inverse_linear' # we use 'inverse_linear' for our synthetic data as that's how we render it. we use 'inverse_square' for real world data
+test:
+  mode: 'color_correction'
+  scene_center: [0.0, 0.05, 0.05]
+  n_frames: 100
+  fps: 20
+  trajectory_scale: 0.1
+optimizer:
+  max_epochs: 5000000
+  lr: 0.0001
+visualization:
+  history_size: 10
+  visdom: True
+  visdom_server: 'localhost'
+  visdom_port: 8097
+  visdom_env: 'nerf_pytorch3d'
+raysampler:
+  n_pts_per_ray: 100
+  n_rays_per_image: 1000
+  near_bounding_in_z: -0.2
+  near_to_far_range_in_z: 0.4
+  stratified: True
+  stratified_test: False
+  chunk_size_test: 10000
+implicit_function:
+  n_harmonic_functions_xyz: 21
+  n_harmonic_functions_dir: 8
+  n_hidden_neurons_xyz: 256
+  n_hidden_neurons_dir: 128
+  density_noise_std: 0.0
+  n_layers_xyz: 8
+  skip: 5

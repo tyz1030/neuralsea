@@ -43,7 +43,7 @@ class WaterEmissionAbsorptionRaymarcher(EmissionAbsorptionRaymarcher):
         rays_bundle: RayBundle,
         raw_densities: torch.Tensor,
         reflected_light: torch.Tensor,
-        rwd,
+        abso_coeff,
         norm_grad: torch.Tensor,
         eps: float = 1e-10,
         **kwargs,
@@ -60,10 +60,10 @@ class WaterEmissionAbsorptionRaymarcher(EmissionAbsorptionRaymarcher):
             dim=-1,
         )[..., None]
 
-        attn = torch.exp(-rays_bundle.lengths[..., 0].unsqueeze(-1)*torch.linalg.vector_norm(rays_bundle.directions, dim = -1, keepdim=True)*rwd*2).unsqueeze(-2)
+        attn = torch.exp(-rays_bundle.lengths[..., 0].unsqueeze(-1)*torch.linalg.vector_norm(rays_bundle.directions, dim = -1, keepdim=True)*abso_coeff*2).unsqueeze(-2)
 
         rays_densities = 1 - (-deltas * raw_densities * 2).exp() #
-        absorption = _shifted_cumprod(eps + (-deltas * (raw_densities*ref_mask+rwd*sca_mask) *2).exp(), shift=self.surface_thickness, dir = 0)
+        absorption = _shifted_cumprod(eps + (-deltas * (raw_densities*ref_mask+abso_coeff*sca_mask) *2).exp(), shift=self.surface_thickness, dir = 0)
         # absorption = _shifted_cumprod(eps + (-deltas * (raw_densities*ref_mask) *2).exp(), shift=self.surface_thickness, dir = 0)
         weights = attn*rays_densities*absorption
         # weights = rays_densities * absorption
@@ -71,7 +71,7 @@ class WaterEmissionAbsorptionRaymarcher(EmissionAbsorptionRaymarcher):
 
         refined_density = ref_mask*raw_densities
         refined_rays_densities = 1 - (-deltas * refined_density*2).exp() #
-        refined_absorption = _shifted_cumprod((eps) + (-deltas * (raw_densities*ref_mask+rwd*sca_mask) *2).exp(), shift=self.surface_thickness, dir = 0)
+        refined_absorption = _shifted_cumprod((eps) + (-deltas * (raw_densities*ref_mask+abso_coeff*sca_mask) *2).exp(), shift=self.surface_thickness, dir = 0)
         refined_weights = attn*refined_rays_densities * refined_absorption
         
         corrected_absorption = _shifted_cumprod((eps) + (-deltas * refined_density *2).exp(), shift=self.surface_thickness, dir = 0)

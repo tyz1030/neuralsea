@@ -1,4 +1,4 @@
-*.png
+# *.png
 /data_*
 */data_*
 *outputs*

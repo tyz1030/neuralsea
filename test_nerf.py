@@ -38,17 +38,13 @@ def main(cfg: DictConfig):
     model = WaterReflectanceFieldRenderer(
         image_size=cfg.data.image_size,
         n_pts_per_ray=cfg.raysampler.n_pts_per_ray,
-        # n_pts_per_ray_light_source=cfg.raysampler.n_pts_per_ray_light_source,
         n_rays_per_image=cfg.raysampler.n_rays_per_image,
-        min_depth=cfg.raysampler.min_depth,
-        max_depth=cfg.raysampler.max_depth,
+        near_bounding_in_z=cfg.raysampler.near_bounding_in_z,
+        near_to_far_range_in_z=cfg.raysampler.near_to_far_range_in_z,
         stratified=cfg.raysampler.stratified,
         stratified_test=cfg.raysampler.stratified_test,
         chunk_size_test=cfg.raysampler.chunk_size_test,
-        # n_harmonic_functions_xyz=cfg.implicit_function.n_harmonic_functions_xyz,
-        # n_harmonic_functions_dir=cfg.implicit_function.n_harmonic_functions_dir,
         n_hidden_neurons_xyz=cfg.implicit_function.n_hidden_neurons_xyz,
-        # n_hidden_neurons_dir=cfg.implicit_function.n_hidden_neurons_dir,
         n_layers_xyz=cfg.implicit_function.n_layers_xyz,
         density_noise_std=cfg.implicit_function.density_noise_std,
         append_xyz = (cfg.implicit_function.skip,)
@@ -71,20 +67,16 @@ def main(cfg: DictConfig):
         for k, v in loaded_data["model"].items()
         if "_grid_raysampler._xy_grid" not in k
     }
-    # print(state_dict.keys())
-    # import sys
-    # sys.exit()
     model.load_state_dict(state_dict, strict=True)
 
     # Load the test data.
-    if cfg.test.mode == "evaluation":
-        _, _, test_dataset = get_colmap_datasets()
-    elif cfg.test.mode == "color_correction":
+    # if cfg.test.mode == "evaluation":
+    #     _, _, test_dataset = get_colmap_datasets()
+    if cfg.test.mode == "color_correction":
         if cfg.data.dataset_type == "synthetic":
-            train_dataset, _, _ = get_synthetic_datasets()
+            train_dataset, _, _ = get_synthetic_datasets(cfg.data.dataset_name)
         if cfg.data.dataset_type == "real":
-            train_dataset, _, _ = get_colmap_datasets()
-
+            train_dataset, _, _ = get_colmap_datasets(cfg.data.dataset_name, cfg.data.image_down_scale, cfg.data.pose_down_scale)
 
         test_dataset = train_dataset
         # store the video in directory (checkpoint_file - extension + '_video')
@@ -140,7 +132,11 @@ def main(cfg: DictConfig):
             stats.print(stat_set="test")
 
         elif cfg.test.mode == "color_correction":
-            frame = (test_nerf_out["rgb_corrected"][0]).detach().cpu().clamp(0.0, 1.0)
+            if cfg.data.dataset_type == "real":
+                frame = (test_nerf_out["rgb_corrected"][0]**0.45).detach().cpu().clamp(0.0, 1.0)
+            elif cfg.data.dataset_type == "synthetic":
+                frame = (test_nerf_out["rgb_corrected"][0]).detach().cpu().clamp(0.0, 1.0)
+            
             frame = np.flip(frame.numpy(), axis=[0,1])
             frame_path = os.path.join(export_dir, f"frame_{batch_idx:05d}.png")
             print(f"Writing {frame_path}.")
