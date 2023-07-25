@@ -1,4 +1,10 @@
 # Beyond NeRF Underwater: Learning Neural Reflectance Fields for True Color Correction of Marine Imagery
+[UPDATE!] One synthetic and one real data examples are now released!
+Here is the synthetic [White Lego dataset](https://drive.google.com/drive/folders/1wy5nqjScpv-IhXK34UyBTfYI8LFjChcZ?usp=drive_link). Download 'data_lego_white' and put it under the neuralsea directory. Download [white lego weights](https://drive.google.com/file/d/1M8zOzWOWT06GyotxbYN1Zba7vqMJCOU6/view?usp=drive_link) and put it under neuralsea/checkpoints/ to use our pretrained weights.
+
+Real data [Water tank real data](https://drive.google.com/drive/folders/18rQ2qeaFx8i4TKcgShLUNtcMMPhNjptD?usp=drive_link) and [weights](https://drive.google.com/file/d/13_S0SLOmDhMwUYVX_aXg1fTmd60V3gg-/view?usp=drive_link).
+
+
 coming soon\
 paper in submission\
 [arxiv](https://arxiv.org/abs/2304.03384)
@@ -23,6 +29,8 @@ Water Tank Mid Turbidity:\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/83d8da0f5273690b592ff8f6d95c346937f483c1/lab42_midturbidity.gif "novel view")\
 Water Tank High Turbidity:\
 ![novel view](https://github.com/tyz1030/neuralsea/blob/83d8da0f5273690b592ff8f6d95c346937f483c1/lab43_highturbidity.gif "novel view")
+
+<!---
 ## Data ##
 We have [white lego dataset](https://drive.google.com/drive/folders/1wy5nqjScpv-IhXK34UyBTfYI8LFjChcZ?usp=share_link "white lego") released.
 
@@ -31,6 +39,7 @@ We have [white lego dataset](https://drive.google.com/drive/folders/1wy5nqjScpv-
 Download 'data_lego_white' and put it under the neuralsea directory.
 
 Download [white lego weights](https://drive.google.com/file/d/1t8dh7cV-m5r86lLvkS7ft8tSdnFaQMfx/view?usp=sharing) and put it under neuralsea/checkpoints/ to use our pretrained weights.
+-->
 
 ## Dependencies ##
 
@@ -50,8 +59,15 @@ pip install hydra-core plotly visdom matplotlib
 
 ## Train & Test ##
 ```
-python3 train_nerf.py --config-name legow
-python3 test_nerf.py --config-name legow
+# for synthetic data example
+python3 train_nerf.py --config-name synthetic_lego_white
+python3 test_nerf.py --config-name synthetic_lego_white
+```
+
+```
+# for synthetic data example
+python3 train_nerf.py --config-name real_watertank
+python3 test_nerf.py --config-name real_watertank
 ```
 
 ## Visualization ##
