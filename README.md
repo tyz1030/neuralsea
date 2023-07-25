@@ -65,7 +65,7 @@ python3 test_nerf.py --config-name synthetic_lego_white
 ```
 
 ```
-# for synthetic data example
+# for water tank data example
 python3 train_nerf.py --config-name real_watertank
 python3 test_nerf.py --config-name real_watertank
 ```
