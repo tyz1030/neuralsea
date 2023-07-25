@@ -96,16 +96,7 @@ class BoundingPlaneRaysamplerCustom(torch.nn.Module):
         depths = torch.linspace(
             0, 1, self.n_pts_per_ray, device=cameras.device)
 
-
-        ####TODO
-
-        # Adjust the following to put the scene between near and far bounding planes
-        ####
-        # z_to_foreground = -z_to_center+0.6
-        # z_foreg_to_back = 0.4
-
         z_to_foreground = -z_to_center+self.near_bounding_in_z
-        # z_foreg_to_back = near_to_far_range_in_z
 
         depths = z_to_foreground + depths*self.near_to_far_range_in_z
         if self.training:
