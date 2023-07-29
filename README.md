@@ -1,12 +1,10 @@
 # Beyond NeRF Underwater: Learning Neural Reflectance Fields for True Color Correction of Marine Imagery
-[UPDATE!] One synthetic and one real data examples are now released!
+[**UPDATE!**] Our paper just gets accepted by RA-L! Thanks to reviewers, collaborators, editors, and those who raise issues on GitHub which helped us improve the code a lot. \
+One synthetic and one real data examples are now released!
 Here is the synthetic [White Lego dataset](https://drive.google.com/drive/folders/1wy5nqjScpv-IhXK34UyBTfYI8LFjChcZ?usp=drive_link). Download 'data_lego_white' and put it under the neuralsea directory. Download [white lego weights](https://drive.google.com/file/d/1M8zOzWOWT06GyotxbYN1Zba7vqMJCOU6/view?usp=drive_link) and put it under neuralsea/checkpoints/ to use our pretrained weights.
 
 Real data [Water tank real data](https://drive.google.com/drive/folders/18rQ2qeaFx8i4TKcgShLUNtcMMPhNjptD?usp=drive_link) and [weights](https://drive.google.com/file/d/13_S0SLOmDhMwUYVX_aXg1fTmd60V3gg-/view?usp=drive_link).
 
-
-coming soon\
-paper in submission\
 [arxiv](https://arxiv.org/abs/2304.03384)
 
 Left: with water effects;       Right: color corrected \
