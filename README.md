@@ -2,7 +2,7 @@
 [**UPDATE!**] Our paper just gets accepted by RA-L! Thanks to reviewers, collaborators, editors, and those who raise issues on GitHub which helped us improve the code a lot.
 
 All [data](https://drive.google.com/drive/folders/1JU9AXmWA-18B1rg6Aj2gYXD2_nE06B7h?usp=drive_link) presented in the paper are now released.\
-Example: Download 'data_lego_white' and put it under the neuralsea directory. Download [white lego weights](https://drive.google.com/file/d/1M8zOzWOWT06GyotxbYN1Zba7vqMJCOU6/view?usp=drive_link) and put it under neuralsea/checkpoints/ to use our pretrained weights.
+Example: Download 'data_lego_white' and put it under the neuralsea directory. Download [white lego weights](https://drive.google.com/file/d/1M8zOzWOWT06GyotxbYN1Zba7vqMJCOU6/view?usp=drive_link) and put it under neuralsea/checkpoints/ to use our pretrained weights (not all weights are released so far. I will upload them once I got time. Feel free to train from scratch and I don't usually stick with certain random seeds.).
 
 
 ## Publication ##
