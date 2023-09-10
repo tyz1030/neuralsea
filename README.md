@@ -84,14 +84,15 @@ Then in your browser, navigate to http://localhost:8097/
 
 
 ## Paper ##
-[arxiv](https://arxiv.org/abs/2304.03384)
+If you find this study helpful please kindly cite us:
 ```
-@misc{zhang2023nerf,
-      title={Beyond NeRF Underwater: Learning Neural Reflectance Fields for True Color Correction of Marine Imagery}, 
-      author={Tianyi Zhang and Matthew Johnson-Roberson},
-      year={2023},
-      eprint={2304.03384},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
-}
+@ARTICLE{10225666,
+  author={Zhang, Tianyi and Johnson-Roberson, Matthew},
+  journal={IEEE Robotics and Automation Letters}, 
+  title={Beyond NeRF Underwater: Learning Neural Reflectance Fields for True Color Correction of Marine Imagery}, 
+  year={2023},
+  volume={8},
+  number={10},
+  pages={6467-6474},
+  doi={10.1109/LRA.2023.3307287}}
 ```
