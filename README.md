@@ -96,3 +96,6 @@ If you find this study helpful please kindly cite us:
   pages={6467-6474},
   doi={10.1109/LRA.2023.3307287}}
 ```
+
+## Miscellaneous ##
+(Irrelavant to this paper) Our field work featured on [noaa.gov](https://oceanexplorer.noaa.gov/explorations/23low-cost-robot/welcome.html)
